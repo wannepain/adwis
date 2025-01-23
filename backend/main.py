@@ -1,7 +1,8 @@
 from flask import Flask, json
 from flask import request
 from chatbot import respond
-from corpus import inicialize_small_corpus, inicialize_medium_corpus
+from corpus import inicialize_medium_corpus  # Corrected import
+from evaluation import evaluate
 app = Flask(__name__)
 
 history = [] #this will eitherbe stored on the client side (local sotrage) or db
@@ -9,7 +10,7 @@ corpus = inicialize_medium_corpus()
 used_question_idx = []
 
 @app.route("/respond")
-def home():
+def respond_route():
     client_response = request.args.get("res")
 
     if client_response and history:
@@ -22,4 +23,12 @@ def home():
     
     return json.dumps({"response":history[-1]["bot"]["Question_Text"], "history":history})
    
-app.run()
+
+@app.route("/eval")
+def eval():
+    if len(history)>0:
+        evaluate(history)
+    return json.dumps({"response":"evaluation is done"})
+
+if __name__ =="__main__":
+    app.run()
