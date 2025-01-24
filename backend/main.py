@@ -2,6 +2,7 @@ from flask import Flask, json
 from flask import request
 from chatbot import respond
 from corpus import inicialize_medium_corpus  # Corrected import
+from career import return_career
 from evaluation import evaluate
 
 app = Flask(__name__)
@@ -320,7 +321,7 @@ corpus = inicialize_medium_corpus()
 used_question_idx = []
 
 
-@app.route("/respond")
+@app.route("/respond", methods=["POST"])
 def respond_route():
     client_response = request.args.get("res")
 
@@ -337,10 +338,12 @@ def respond_route():
     )
 
 
-@app.route("/eval")
-def eval():
-    scores = evaluate(history)
-    return json.dumps({"response": "evaluation is done", "scores": scores})
+@app.route("/career", methods=["POST"])
+def career_route():
+    request_data = request.get_json()
+    history_in_req = request_data["history"]
+    career = return_career(history_in_req)
+    return json.dumps({"career": career})
 
 
 if __name__ == "__main__":
