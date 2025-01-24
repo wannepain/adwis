@@ -1,3 +1,5 @@
+from evaluation import evaluate
+
 medium_careers = [
     {
         "ID": "1",
@@ -260,3 +262,38 @@ medium_careers = [
         "Starting_Salary": 55000,
     },
 ]
+
+
+def return_career(history):
+    """
+    Returns the career that best fits the user's responses
+    Args:
+        history: list of dicts, e.g., [{"bot": corpus[id], "client": "I like drawing"}, ...]
+    Returns:
+        The most similar career to the user's responses
+    """
+    scores = evaluate(history)
+    if scores is None:
+        return None
+
+    # Convert scores to a dictionary for easier comparison
+    user_scores = {score[0]: score[1] for score in scores}
+
+    def calculate_similarity(career_scores, user_scores):
+        similarity = 0
+        for intent, score in user_scores.items():
+            if intent in career_scores:
+                similarity += abs(career_scores[intent] - score)
+        return similarity
+
+    most_similar_career = None
+    lowest_similarity = float("inf")
+
+    for career in medium_careers:
+        career_scores = career["Scores"]
+        similarity = calculate_similarity(career_scores, user_scores)
+        if similarity < lowest_similarity:
+            lowest_similarity = similarity
+            most_similar_career = career
+
+    return most_similar_career
