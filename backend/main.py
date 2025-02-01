@@ -21,9 +21,13 @@ def home():
 
 
 @app.route("/respond", methods=["POST"])
+@cross_origin()
 def respond_route():  # need to move the used question idx to the global scope
     request_data = request.get_json()
     history_in_req = request_data["history"]
+    print(f"history_in_req:{history_in_req}")
+    used_question_idx = request_data["used_question_idx"]
+    print(f"used_question_idx:{used_question_idx}")
 
     return_response = respond(history_in_req, corpus, used_question_idx)
     print(return_response)
@@ -31,6 +35,7 @@ def respond_route():  # need to move the used question idx to the global scope
     return json.dumps(
         {
             "history": history_in_req,
+            "used_question_idx": used_question_idx,
         }
     )
 
