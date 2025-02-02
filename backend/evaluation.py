@@ -4,7 +4,7 @@ nlp = spacy.load("en_core_web_md")
 # corpus = inicialize_medium_corpus()
 
 
-def evaluate(history):
+def evaluate(history, corpus):
     """
     Evaluates the chatbot's performance based on the client's responses.
     Args:
@@ -21,14 +21,32 @@ def evaluate(history):
     scores = []
     intent_counts = {}  # Dictionary to count occurrences of each intent
 
+    used_question_data = []
+
     for response in history:
         if response["client"]:
             responses.append(response["client"])
-            question_intents.append(response["bot"]["Intent"])
+            question_intent = None
+            found_question = None
+
+            for question in corpus:
+                if int(question["ID"]) == int(response["bot"]["ID"]):
+                    found_question = question
+                    break
+
+            if found_question:
+                used_question_data.append(found_question)
+                print(f"the found_question is:{found_question}")
+                question_intents.append(found_question["Intent"])
+            else:
+                print(
+                    f"Warning: No matching question found for bot ID {response['bot']['ID']}"
+                )
 
     iter = 0
+    print(used_question_data)
     for response in responses:
-        example_responses = history[iter]["bot"]["example_responses"]
+        example_responses = used_question_data[iter]["example_responses"]
         question_intent = question_intents[iter]
         score = select_simlar(response, example_responses)
         found = False

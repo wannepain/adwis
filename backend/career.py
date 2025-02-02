@@ -1,4 +1,5 @@
 from evaluation import evaluate
+from corpus import inicialize_medium_corpus
 
 medium_careers = [
     {
@@ -262,6 +263,7 @@ medium_careers = [
         "Starting_Salary": 55000,
     },
 ]
+medium_corpus = inicialize_medium_corpus()
 
 
 def return_career(history):
@@ -272,7 +274,8 @@ def return_career(history):
     Returns:
         The most similar career to the user's responses
     """
-    scores = evaluate(history)
+
+    scores = evaluate(history, medium_corpus)
     if scores is None:
         return None
 
