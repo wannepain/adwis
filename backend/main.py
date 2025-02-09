@@ -34,9 +34,7 @@ corpus = inicialize_medium_corpus()
 def respond_route():  # need to move the used question idx to the global scope
     request_data = request.get_json()
     history_in_req = request_data["history"]
-    print(f"history_in_req:{history_in_req}")
     used_question_idx = request_data["used_question_idx"]
-    print(f"used_question_idx:{used_question_idx}")
 
     respond(history_in_req, corpus, used_question_idx)
 
@@ -59,7 +57,7 @@ def career_route():
 
 @app.route("/api/sign", methods=["POST"])
 @cross_origin()
-def sign_in():
+def sign_in():  # first check if the customer exists, then act accordingly
     request_data = request.get_json()
     user = request_data.get("user")
 
