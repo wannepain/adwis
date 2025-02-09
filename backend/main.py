@@ -38,10 +38,9 @@ def respond_route():  # need to move the used question idx to the global scope
     used_question_idx = request_data["used_question_idx"]
     print(f"used_question_idx:{used_question_idx}")
 
-    return_response = respond(history_in_req, corpus, used_question_idx)
-    print(return_response)
+    respond(history_in_req, corpus, used_question_idx)
 
-    return json.dumps(
+    return jsonify(
         {
             "history": history_in_req,
             "used_question_idx": used_question_idx,
@@ -55,7 +54,7 @@ def career_route():
     request_data = request.get_json()
     history_in_req = request_data["history"]
     career = return_career(history_in_req)
-    return json.dumps({"career": career})
+    return jsonify({"career": career})
 
 
 @app.route("/api/sign", methods=["POST"])
@@ -80,6 +79,7 @@ def sign_in():
         return jsonify({"success": True, "error": None}), 200
 
     except Exception as e:
+        print(f"error in sign_in \n {e}")
         return jsonify({"success": False, "error": str(e)}), 500
 
 
@@ -146,7 +146,10 @@ def stripe_webhook():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
+    print("got event")
+
     if event["type"] == "invoice.payment_succeeded":
+
         subscription_id = event["data"]["object"]["subscription"]
         customer_id = event["data"]["object"]["customer"]
 
