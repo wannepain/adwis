@@ -1,0 +1,13 @@
+backend:
+    functions:
+        - entry: main.py
+          handler: handler
+          name: function-flask
+          path: .
+          type: httpServer
+    language:
+        name: js
+    path: ./backend
+name: adwis
+region: eu-central-1
+yamlVersion: 2
